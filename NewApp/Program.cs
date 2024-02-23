@@ -3,7 +3,6 @@
 using (ApplicationContext db = new())
 
 {
-
     //if (!db.Users.Any())
     //{
     //    User tom = new() { FullName = "Tom", BirthDate = new DateTime(1988, 11, 15) };
@@ -13,6 +12,8 @@ using (ApplicationContext db = new())
     //    db.Users.Add(alice);
     //    db.SaveChanges();
     //}
+
+    DateTime birthDate;
     do
     {
         Console.WriteLine("Выберите действие:");
@@ -34,26 +35,31 @@ using (ApplicationContext db = new())
 
                 }
                 break;
+
             case "2":
                 Console.WriteLine("Введите полное имя пользователя:");
                 string? fullName = Console.ReadLine();
-                Console.WriteLine("Введите дату рождения пользователя в формате ГГГГ-ММ-ДД:");
-                DateTime birthDate;
-                if (DateTime.TryParse(Console.ReadLine(), out birthDate))
+                if (string.IsNullOrWhiteSpace(fullName)) 
                 {
-                    if (!db.Users.Any(u => u.FullName == fullName))
-                    {
-                        User newUser = new() { FullName = fullName, BirthDate = birthDate };
-                        db.Users.Add(newUser);
-                        db.SaveChanges();
-                        Console.WriteLine("Пользователь успешно добавлен.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Ошибка ввода даты рождения.");
-                    }
+                    Console.WriteLine("Имя пользователя не может быть пустым.");
+                    break; 
                 }
+
+                Console.WriteLine("Введите дату рождения пользователя в формате ГГГГ-ММ-ДД:");
+                if (!DateTime.TryParse(Console.ReadLine(), out birthDate))
+                {
+                    Console.WriteLine("Ошибка ввода даты рождения.");
+                    break; 
+                }
+
+                User newUser = new() { FullName = fullName, BirthDate = birthDate };
+                db.Users.Add(newUser);
+                db.SaveChanges();
+                Console.WriteLine("Пользователь успешно добавлен.");
                 break;
+
+
+
             case "3":
                 Console.WriteLine("Введите Id пользователя, чьи данные вы хотите обновить:");
                 int userIdToUpdate;
